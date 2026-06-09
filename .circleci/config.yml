@@ -7,24 +7,24 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "cd-netlify-react-app/package-lock.json" }}
+          key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Install Dependencies
-          command: cd cd-netlify-react-app && npm install
+          command: npm install
       - save_cache:
-          key: dependency-cache-{{ checksum "cd-netlify-react-app/package-lock.json" }}
+          key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
-            - ./cd-netlify-react-app/node_modules
+            - ./node_modules
       - run:
           name: Build React App
-          command: cd cd-netlify-react-app && npm run build
+          command: npm run build
       - save_cache:
           key: app-build-cache-{{ .Branch }}
           paths:
-            - ./cd-netlify-react-app/build
+            - ./build
       - run:
           name: Deploy to Netlify
-          command: cd cd-netlify-react-app && ./node_modules/.bin/netlify deploy --site $NETLIFY_SITE_ID --auth $NETLIFY_ACCESS_TOKEN --prod --dir=build
+          command: ./node_modules/.bin/netlify deploy --site $NETLIFY_SITE_ID --auth $NETLIFY_ACCESS_TOKEN --prod --dir=build
 workflows:
   version: 2
   build-deploy:
